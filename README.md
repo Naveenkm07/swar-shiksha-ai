@@ -89,4 +89,4 @@ To add your own textbooks:
 - **[Your Name]** - Full Stack AI Developer
 
 ---
-*Built with ❤️ for HackBLR 2024.*
+*Built with ❤️ for HackBLR 2026.*

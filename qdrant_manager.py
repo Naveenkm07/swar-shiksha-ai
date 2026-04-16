@@ -8,10 +8,15 @@ load_dotenv()
 
 class QdrantManager:
     def __init__(self):
-        self.client = QdrantClient(
-            url=os.getenv("QDRANT_HOST", "localhost"),
-            api_key=os.getenv("QDRANT_API_KEY")
-        )
+        host = os.getenv("QDRANT_HOST", "localhost")
+        if host == "localhost":
+            self.client = QdrantClient(":memory:")
+            print("Using in-memory Qdrant storage.")
+        else:
+            self.client = QdrantClient(
+                url=host,
+                api_key=os.getenv("QDRANT_API_KEY")
+            )
         self.collection_name = "education_content"
         self.vector_size = 1536  # OpenAI text-embedding-3-small/ada-002 size
 
