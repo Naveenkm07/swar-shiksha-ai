@@ -1,92 +1,77 @@
 # Swar-Shiksha (स्वर-शिक्षा) 🎙️
-### *Voice-First AI Tutor for Inclusive Education*
+### *Empowering the Visually Impaired through Voice-First AI*
 
-**Swar-Shiksha** is a high-impact AI agent designed to bridge the accessibility gap in education. It empowers visually impaired, dyslexic, and low-literacy students by transforming static textbooks into interactive, multilingual voice conversations.
+[![HackBLR 2026](https://img.shields.io/badge/HackBLR-2026-indigo.svg)](https://hackblr.in)
+[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](https://opensource.org/licenses/MIT)
 
-Built for **HackBLR**, this project leverages state-of-the-art Voice AI and Vector Search to provide a "hands-free" learning experience.
+**Swar-Shiksha** is a high-impact AI tutor designed for **Accessibility & Societal Impact (PS-3)**. It transforms static, inaccessible textbooks into interactive, bilingual voice conversations, specifically built for the 2.2 billion people worldwide living with vision impairment.
+
+---
+
+## 🌟 Vision
+"Technology is only as powerful as it is inclusive." Swar-Shiksha ensures that students with visual impairments, dyslexia, or low-literacy levels can master any subject through simple, natural conversation—completely hands-free.
+
+## 🔥 Key Differentiators (The Edge)
+*   **Zero Hallucination RAG:** Powered by **Qdrant**, our agent only speaks facts retrieved directly from indexed textbooks.
+*   **Vision Narrator:** Uses **GPT-4o Vision** to describe complex educational diagrams and graphs that standard screen readers ignore.
+*   **Bilingual Mastery:** Seamlessly bridges the regional language gap by tutoring in both **Hindi and English**.
+*   **Voice-Driven Quizzes:** Active learning assessments triggered and answered entirely via voice.
 
 ---
 
-## 🚀 The Problem
-Traditional educational resources are text-heavy, creating significant barriers for:
-- **Visually Impaired Students:** Who rely on expensive braille or slow screen readers.
-- **Dyslexic Learners:** Who struggle with reading long-form text.
-- **Regional Language Gap:** Rural students often have textbook material in English but understand concepts better in their native tongue.
-
-## ✨ Our Solution
-Swar-Shiksha acts as a personal tutor that:
-1. **Listens:** Uses **Vapi** for ultra-low latency voice transcription.
-2. **Thinks (RAG):** Uses **Qdrant** to perform semantic search across indexed textbooks.
-3. **Speaks:** Responds in a natural, empathetic voice, explaining complex concepts simply.
-
----
+## 📦 Core Features
+- **Semantic Textbook Search:** Ask, "Explain the first law of thermodynamics," and the agent retrieves the exact context.
+- **Dynamic PDF Ingestion:** A streamlined dashboard for teachers to upload and index new curriculum in seconds.
+- **Context-Aware Chunking:** Paragraph-intelligent processing ensures tutoring remains coherent and logical.
+- **Ultra-Low Latency:** Optimized with **Vapi.ai** and **Deepgram** for near-instant human-like responses.
 
 ## 🛠️ Tech Stack
-- **Voice Interface:** [Vapi](https://vapi.ai/) (Real-time Voice AI)
-- **Vector Database:** [Qdrant](https://qdrant.tech/) (Knowledge Retrieval)
-- **Backend:** FastAPI (Python)
-- **Frontend:** React + TypeScript + Tailwind CSS
-- **AI Models:** OpenAI (GPT-3.5-Turbo & Text-Embeddings-3-Small)
-- **PDF Processing:** PyPDF2
-
----
-
-## 📦 Features
-- **Semantic Textbook Search:** Ask about any topic (e.g., "Explain Newton's First Law") and the agent retrieves the exact context from the PDF.
-- **Multilingual Support:** Seamlessly switch between English and Hindi.
-- **Interactive Quiz Mode:** Voice-driven assessments to test and track learning progress.
-- **Dynamic PDF Upload:** Directly upload and index new textbooks via the web interface.
-- **Diagram Descriptions:** Automatically extracts and describes educational images and graphs using OpenAI Vision models.
-- **Context-Aware RAG:** Intelligent text chunking that respects paragraph boundaries for more coherent tutoring.
-- **Accessibility First:** Minimalistic, voice-driven UI designed for ease of use.
-- **Interactive Transcripts:** Real-time feedback showing the student what is being searched and discussed.
+| Layer | Technology |
+| :--- | :--- |
+| **Voice Interface** | Vapi.ai (Real-time AI SDK) |
+| **Vector Engine** | Qdrant (Knowledge Retrieval & Memory) |
+| **Reasoning & Vision** | OpenAI GPT-4o / GPT-4o-mini |
+| **Backend** | FastAPI (High-performance Python) |
+| **Frontend** | React, TypeScript, Tailwind CSS |
+| **Document Processing** | PyMuPDF (Vision extraction) |
 
 ---
 
 ## 🚦 Getting Started
 
-### 1. Prerequisites
-- Python 3.9+
-- Node.js & npm
-- [ngrok](https://ngrok.com/) (for local webhook testing)
-
-### 2. Backend Setup
-```bash
-# Clone the repo
-git clone [your-repo-link]
-cd swar-shiksha
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Set up environment variables
-# Copy .env.example to .env and add your API keys
-python main.py
+### 1. Environment Setup
+Create a `.env` file in the root directory:
+```env
+VAPI_API_KEY=your_key
+OPENAI_API_KEY=your_key
+QDRANT_HOST=localhost
 ```
 
-### 3. Frontend Setup
-```bash
-cd frontend
-npm install
-npm run dev
-```
+### 2. Launch the Ecosystem
+Use our quick-start scripts to launch both servers:
+- **Windows:** `./start.bat`
+- **Linux/Mac:** `bash start.sh`
 
-### 4. Data Ingestion
-To add your own textbooks:
-1. Place the PDF in the root folder.
-2. Update the path in `pdf_processor.py`.
-3. Run the ingestion script to populate Qdrant.
+### 3. Ngrok Integration
+Since Vapi requires a public endpoint for tools, expose your port 8000:
+```bash
+ngrok http 8000
+```
+*Update the URL in `frontend/src/App.tsx`.*
 
 ---
 
 ## 🗺️ Roadmap
-- [x] **Multilingual Support:** English and Hindi voice interaction.
-- [x] **Quiz Mode:** Voice-driven assessments to track student progress.
-- [x] **Diagram Descriptions:** Using Vision models to explain textbook images via voice.
-- [ ] **Offline Support:** Edge-AI for rural areas with poor connectivity.
+- [x] **V1.0:** RAG-based search and voice interaction.
+- [x] **V1.5:** Multilingual support (Hindi/English).
+- [x] **V2.0:** Diagram Descriptions via Vision AI.
+- [ ] **V3.0:** Edge-AI (Offline) support for remote rural areas.
+- [ ] **V3.5:** Smart Glasses (AR) integration for real-time book reading.
 
-## 👥 Team
-- **[Your Name]** - Full Stack AI Developer
+## 👥 Team & Submission
+*   **Lead Developer:** Naveen Kumar K M
+*   **Hackathon:** HackBLR 2026
+*   **Problem Statement:** PS-3 (Accessibility & Societal Impact)
 
 ---
-*Built with ❤️ for HackBLR 2026.*
+*Built with ❤️ to ensure no student is left behind.*
