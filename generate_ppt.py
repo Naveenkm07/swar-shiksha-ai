@@ -26,7 +26,7 @@ def create_styled_presentation():
             MSO_SHAPE.RECTANGLE, 0, 0, Inches(0.1), Inches(7.5)
         )
         shape.fill.solid()
-        shape.fill.foreground_color.rgb = INDIGO
+        shape.fill.fore_color.rgb = INDIGO
         shape.line.fill.background()
 
     def add_styled_slide(title_text, bullet_points, is_dark=True):
@@ -80,7 +80,7 @@ def create_styled_presentation():
     # Large Decorative Circle
     circle = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(6), Inches(-1), Inches(5), Inches(5))
     circle.fill.solid()
-    circle.fill.foreground_color.rgb = INDIGO
+    circle.fill.fore_color.rgb = INDIGO
     circle.line.fill.background()
 
     title_box = slide.shapes.add_textbox(Inches(0.5), Inches(2.5), Inches(7), Inches(2))
