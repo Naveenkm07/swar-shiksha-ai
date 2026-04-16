@@ -281,7 +281,7 @@ const App: React.FC = () => {
       </main>
 
       <footer className="py-8 text-center text-slate-400 text-sm">
-        &copy; 2024 Swar-Shiksha AI. Built for HackBLR.
+        &copy; 2026 Swar-Shiksha AI. Built for HackBLR.
       </footer>
     </div>
   );

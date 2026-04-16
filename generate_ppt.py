@@ -68,7 +68,7 @@ def create_styled_presentation():
         # Footer
         footer = slide.shapes.add_textbox(Inches(0.5), Inches(7.1), Inches(9), Inches(0.3))
         fp = footer.text_frame.paragraphs[0]
-        fp.text = "Swar-Shiksha AI | HackBLR 2024 | Accessibility & Impact"
+        fp.text = "Swar-Shiksha AI | HackBLR 2026 | Accessibility & Impact"
         fp.font.size = Pt(10)
         fp.font.color.rgb = RGBColor(100, 116, 139) # Grayish
         fp.alignment = PP_ALIGN.CENTER
@@ -94,7 +94,7 @@ def create_styled_presentation():
     sub_box = slide.shapes.add_textbox(Inches(0.5), Inches(4.5), Inches(7), Inches(1))
     sub_tf = sub_box.text_frame
     sp = sub_tf.paragraphs[0]
-    sp.text = "Voice-First AI Tutor for Inclusive Education\nHackBLR 2024 | Problem Statement 3"
+    sp.text = "Voice-First AI Tutor for Inclusive Education\nHackBLR 2026 | Problem Statement 3"
     sp.font.size = Pt(24)
     sp.font.color.rgb = EMERALD
 
