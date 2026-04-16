@@ -18,7 +18,7 @@ def create_styled_presentation():
         background = slide.background
         fill = background.fill
         fill.solid()
-        fill.foreground_color.rgb = color
+        fill.fore_color.rgb = color
 
     def add_sidebar(slide):
         # Decorative sidebar for a modern look
