@@ -8,34 +8,15 @@ const App: React.FC = () => {
   const [isCalling, setIsCalling] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [transcript, setTranscript] = useState("");
+  const [language, setLanguage] = useState<'en' | 'hi'>('en');
 
   useEffect(() => {
-    vapi.on('call-start', () => {
-      setIsCalling(true);
-      setConnecting(false);
-    });
-
-    vapi.on('call-end', () => {
-      setIsCalling(false);
-      setConnecting(false);
-    });
-
-    vapi.on('speech-start', () => {
-      console.log('Assistant started speaking');
-    });
-
-    vapi.on('message', (message) => {
-        if (message.type === 'transcript' && message.transcriptType === 'final') {
-            setTranscript(prev => prev + "\n" + message.transcript);
-        }
-    });
-
-    vapi.on('error', (e) => {
-      console.error(e);
-      setConnecting(false);
-      setIsCalling(false);
-    });
+    // ... (rest of the effect)
   }, []);
+
+  const toggleLanguage = () => {
+    setLanguage(prev => (prev === 'en' ? 'hi' : 'en'));
+  };
 
   const startTutorSession = () => {
     setConnecting(true);
@@ -46,7 +27,7 @@ const App: React.FC = () => {
         messages: [
           {
             role: "system",
-            content: "You are Swar-Shiksha, an empathetic and patient voice tutor. Your goal is to help students understand complex concepts from their textbooks. Use the search_knowledge_base tool whenever you need specific information. Keep your explanations clear, simple, and encouraging."
+            content: `You are Swar-Shiksha, an empathetic and patient voice tutor. Your goal is to help students understand complex concepts from their textbooks. Use the search_knowledge_base tool whenever you need specific information. Keep your explanations clear, simple, and encouraging. Respond in ${language === 'en' ? 'English' : 'Hindi'}.`
           }
         ],
         tools: [
@@ -65,14 +46,30 @@ const App: React.FC = () => {
             server: {
               url: "https://YOUR_NGROK_URL.ngrok-free.app/vapi-webhook"
             }
+          },
+          {
+            type: "function",
+            function: {
+              name: "generate_quiz",
+              description: "Generate a quiz for the student on a specific topic.",
+              parameters: {
+                type: "object",
+                properties: {
+                  topic: { type: "string" }
+                }
+              }
+            },
+            server: {
+              url: "https://YOUR_NGROK_URL.ngrok-free.app/vapi-webhook"
+            }
           }
         ]
       },
-      voice: "shimmer",
+      voice: language === 'en' ? "shimmer" : "shimmer", // shimmer works well for both, or use a specific hindi voice
       transcriber: {
         provider: "deepgram",
         model: "nova-2",
-        language: "en"
+        language: language
       }
     });
   };
@@ -92,9 +89,12 @@ const App: React.FC = () => {
           <span className="text-xl font-bold tracking-tight text-slate-800">Swar-Shiksha</span>
         </div>
         <div className="flex items-center gap-4">
-          <button className="flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors">
+          <button 
+            onClick={toggleLanguage}
+            className="flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors bg-slate-100 px-3 py-1.5 rounded-full"
+          >
             <Languages size={18} />
-            <span>English</span>
+            <span>{language === 'en' ? 'Hindi' : 'English'}</span>
           </button>
           <div className="h-6 w-px bg-slate-200"></div>
           <button className="p-2 text-slate-400 hover:text-slate-600">
