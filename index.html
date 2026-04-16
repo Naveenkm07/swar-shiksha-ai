@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swar-Shiksha: Voice AI Tutor</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        h1 { margin-bottom: 0.5rem; }
+        p { margin-bottom: 2rem; opacity: 0.9; }
+        #vapi-btn {
+            background-color: #4facfe;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        #vapi-btn:hover {
+            background-color: #00f2fe;
+            transform: scale(1.05);
+        }
+        #status {
+            margin-top: 1.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Swar-Shiksha 🎙️</h1>
+        <p>Your Multilingual Voice AI Tutor for Inclusive Education</p>
+        
+        <button id="vapi-btn">Start Learning</button>
+        <div id="status">Click to start conversation</div>
+    </div>
+
+    <!-- Vapi SDK -->
+    <script src="https://cdn.jsdelivr.net/gh/vapi-ai/vapi-web-sdk@latest/dist/vapi-sdk.js"></script>
+    <script>
+        const vapi = new Vapi('ea003516-4a37-4f23-bb54-72d5b2d5c24b'); // Using your Public/Private Key
+
+        const btn = document.getElementById('vapi-btn');
+        const status = document.getElementById('status');
+
+        let isCalling = false;
+
+        btn.addEventListener('click', () => {
+            if (!isCalling) {
+                vapi.start({
+                    model: {
+                        provider: "openai",
+                        model: "gpt-3.5-turbo",
+                        messages: [
+                            {
+                                role: "system",
+                                content: "You are Swar-Shiksha, a helpful voice tutor. Use the search_knowledge_base tool to find information from textbooks. Be encouraging and patient."
+                            }
+                        ],
+                        tools: [
+                            {
+                                type: "function",
+                                function: {
+                                    name: "search_knowledge_base",
+                                    description: "Search for educational content from textbooks",
+                                    parameters: {
+                                        type: "object",
+                                        properties: {
+                                            query: { type: "string" }
+                                        }
+                                    }
+                                },
+                                server: {
+                                    url: "YOUR_NGROK_URL/vapi-webhook" // You will replace this
+                                }
+                            }
+                        ]
+                    },
+                    voice: "shimmer", // A pleasant educational voice
+                    transcriber: {
+                        provider: "deepgram",
+                        model: "nova-2",
+                        language: "en" // We can change this for multilingual
+                    }
+                });
+                status.textContent = "Connecting...";
+            } else {
+                vapi.stop();
+            }
+        });
+
+        vapi.on('call-start', () => {
+            isCalling = true;
+            btn.textContent = "Stop Session";
+            status.textContent = "Assistant is listening...";
+        });
+
+        vapi.on('call-end', () => {
+            isCalling = false;
+            btn.textContent = "Start Learning";
+            status.textContent = "Session ended.";
+        });
+
+        vapi.on('error', (e) => {
+            console.error(e);
+            status.textContent = "Error occurred.";
+        });
+    </script>
+</body>
+</html>
