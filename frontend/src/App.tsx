@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Vapi from '@vapi-ai/web';
-import { Mic, MicOff, BookOpen, GraduationCap, Languages, Info } from 'lucide-react';
+import { Mic, MicOff, BookOpen, GraduationCap, Languages, Info, Upload, X, CheckCircle } from 'lucide-react';
 
 const vapi = new Vapi('ea003516-4a37-4f23-bb54-72d5b2d5c24b');
 
@@ -9,10 +9,48 @@ const App: React.FC = () => {
   const [connecting, setConnecting] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [language, setLanguage] = useState<'en' | 'hi'>('en');
+  
+  // Upload State
+  const [showUpload, setShowUpload] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<{message: string, type: 'success' | 'error'} | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [subject, setSubject] = useState("General");
 
   useEffect(() => {
     // ... (rest of the effect)
   }, []);
+
+  const handleUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!fileInputRef.current?.files?.[0]) return;
+
+    setIsUploading(true);
+    setUploadStatus(null);
+    
+    const formData = new FormData();
+    formData.append('file', fileInputRef.current.files[0]);
+    formData.append('subject', subject);
+
+    try {
+      const response = await fetch('http://localhost:8000/upload-textbook', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      const data = await response.json();
+      if (response.ok) {
+        setUploadStatus({ message: `Success: ${data.message}`, type: 'success' });
+        setTimeout(() => setShowUpload(false), 2000);
+      } else {
+        setUploadStatus({ message: `Error: ${data.detail}`, type: 'error' });
+      }
+    } catch (error) {
+      setUploadStatus({ message: "Failed to connect to backend", type: 'error' });
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const toggleLanguage = () => {
     setLanguage(prev => (prev === 'en' ? 'hi' : 'en'));
@@ -131,17 +169,29 @@ const App: React.FC = () => {
               </p>
             </div>
 
-            <button
-              onClick={isCalling ? stopTutorSession : startTutorSession}
-              disabled={connecting}
-              className={`px-10 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg active:scale-95 ${
-                isCalling 
-                ? 'bg-rose-500 hover:bg-rose-600 text-white shadow-rose-200' 
-                : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200'
-              } ${connecting ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              {connecting ? "Connecting..." : isCalling ? "End Session" : "Start Learning Now"}
-            </button>
+            <div className="flex gap-4">
+              <button
+                onClick={isCalling ? stopTutorSession : startTutorSession}
+                disabled={connecting}
+                className={`px-10 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg active:scale-95 ${
+                  isCalling 
+                  ? 'bg-rose-500 hover:bg-rose-600 text-white shadow-rose-200' 
+                  : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200'
+                } ${connecting ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                {connecting ? "Connecting..." : isCalling ? "End Session" : "Start Learning Now"}
+              </button>
+
+              {!isCalling && (
+                <button
+                  onClick={() => setShowUpload(true)}
+                  className="px-6 py-4 rounded-2xl font-bold text-lg bg-white border-2 border-slate-200 text-slate-600 hover:border-indigo-600 hover:text-indigo-600 transition-all flex items-center gap-2"
+                >
+                  <Upload size={20} />
+                  <span>Upload</span>
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Transcript/Log Area */}
@@ -157,6 +207,58 @@ const App: React.FC = () => {
             </div>
           )}
         </div>
+
+        {/* Upload Modal */}
+        {showUpload && (
+          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
+              <div className="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h3 className="text-xl font-bold text-slate-800">Upload Textbook</h3>
+                <button onClick={() => setShowUpload(false)} className="text-slate-400 hover:text-slate-600">
+                  <X size={24} />
+                </button>
+              </div>
+              <form onSubmit={handleUpload} className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1">Subject / Title</label>
+                  <input 
+                    type="text" 
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    className="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="e.g. Science, History"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1">PDF File</label>
+                  <input 
+                    type="file" 
+                    ref={fileInputRef}
+                    accept=".pdf"
+                    className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                    required
+                  />
+                </div>
+                
+                {uploadStatus && (
+                  <div className={`p-4 rounded-xl flex items-center gap-2 text-sm ${uploadStatus.type === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
+                    {uploadStatus.type === 'success' ? <CheckCircle size={18} /> : <X size={18} />}
+                    {uploadStatus.message}
+                  </div>
+                )}
+
+                <button 
+                  type="submit" 
+                  disabled={isUploading}
+                  className={`w-full py-3 rounded-xl font-bold text-white transition-all ${isUploading ? 'bg-slate-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+                >
+                  {isUploading ? "Processing..." : "Start Ingestion"}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">

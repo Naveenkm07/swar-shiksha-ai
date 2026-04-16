@@ -35,6 +35,8 @@ Swar-Shiksha acts as a personal tutor that:
 - **Semantic Textbook Search:** Ask about any topic (e.g., "Explain Newton's First Law") and the agent retrieves the exact context from the PDF.
 - **Multilingual Support:** Seamlessly switch between English and Hindi.
 - **Interactive Quiz Mode:** Voice-driven assessments to test and track learning progress.
+- **Dynamic PDF Upload:** Directly upload and index new textbooks via the web interface.
+- **Context-Aware RAG:** Intelligent text chunking that respects paragraph boundaries for more coherent tutoring.
 - **Accessibility First:** Minimalistic, voice-driven UI designed for ease of use.
 - **Interactive Transcripts:** Real-time feedback showing the student what is being searched and discussed.
 

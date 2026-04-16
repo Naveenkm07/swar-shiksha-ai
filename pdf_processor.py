@@ -16,13 +16,36 @@ class PDFProcessor:
         return text
 
     def chunk_text(self, text, chunk_size=1000, overlap=100):
-        """Splits text into smaller chunks for better embedding search."""
+        """Splits text into contextually aware chunks."""
+        # Split by double newlines first (paragraphs)
+        paragraphs = text.split('\n\n')
         chunks = []
-        start = 0
-        while start < len(text):
-            end = start + chunk_size
-            chunks.append(text[start:end])
-            start = end - overlap
+        current_chunk = ""
+        
+        for para in paragraphs:
+            para = para.strip()
+            if not para:
+                continue
+                
+            if len(current_chunk) + len(para) <= chunk_size:
+                current_chunk += para + "\n\n"
+            else:
+                if current_chunk:
+                    chunks.append(current_chunk.strip())
+                # If a single paragraph is larger than chunk_size, split it naively
+                if len(para) > chunk_size:
+                    start = 0
+                    while start < len(para):
+                        end = start + chunk_size
+                        chunks.append(para[start:end])
+                        start = end - overlap
+                    current_chunk = ""
+                else:
+                    current_chunk = para + "\n\n"
+        
+        if current_chunk:
+            chunks.append(current_chunk.strip())
+            
         return chunks
 
     def process_and_upload(self, pdf_path, subject):

@@ -1,16 +1,23 @@
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 from dotenv import load_dotenv
 import os
+import shutil
 from qdrant_manager import QdrantManager
+from pdf_processor import PDFProcessor
 
 load_dotenv()
 
 app = FastAPI(title="Swar-Shiksha: Voice AI Tutor")
 
-# Initialize Qdrant Manager
+# Initialize Managers
 qdrant_manager = QdrantManager()
+pdf_processor = PDFProcessor()
+
+# Ensure uploads directory exists
+UPLOAD_DIR = "uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 class VapiPayload(BaseModel):
     message: Dict[str, Any]
@@ -18,6 +25,26 @@ class VapiPayload(BaseModel):
 @app.get("/")
 async def root():
     return {"message": "Welcome to Swar-Shiksha API"}
+
+@app.post("/upload-textbook")
+async def upload_textbook(file: UploadFile = File(...), subject: str = Form(...)):
+    if not file.filename.endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are supported.")
+    
+    file_path = os.path.join(UPLOAD_DIR, file.filename)
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    try:
+        # Process and upload to Qdrant
+        pdf_processor.process_and_upload(file_path, subject)
+        return {"message": f"Successfully processed {file.filename}", "subject": subject}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        # Clean up the file after processing
+        if os.path.exists(file_path):
+            os.remove(file_path)
 
 @app.post("/vapi-webhook")
 async def vapi_webhook(payload: VapiPayload):
