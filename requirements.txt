@@ -6,3 +6,5 @@ python-dotenv
 pydantic
 requests
 PyPDF2
+PyMuPDF
+python-multipart

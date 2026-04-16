@@ -36,6 +36,7 @@ Swar-Shiksha acts as a personal tutor that:
 - **Multilingual Support:** Seamlessly switch between English and Hindi.
 - **Interactive Quiz Mode:** Voice-driven assessments to test and track learning progress.
 - **Dynamic PDF Upload:** Directly upload and index new textbooks via the web interface.
+- **Diagram Descriptions:** Automatically extracts and describes educational images and graphs using OpenAI Vision models.
 - **Context-Aware RAG:** Intelligent text chunking that respects paragraph boundaries for more coherent tutoring.
 - **Accessibility First:** Minimalistic, voice-driven UI designed for ease of use.
 - **Interactive Transcripts:** Real-time feedback showing the student what is being searched and discussed.
@@ -81,8 +82,8 @@ To add your own textbooks:
 ## 🗺️ Roadmap
 - [x] **Multilingual Support:** English and Hindi voice interaction.
 - [x] **Quiz Mode:** Voice-driven assessments to track student progress.
+- [x] **Diagram Descriptions:** Using Vision models to explain textbook images via voice.
 - [ ] **Offline Support:** Edge-AI for rural areas with poor connectivity.
-- [ ] **Diagram Descriptions:** Using Vision models to explain textbook images via voice.
 
 ## 👥 Team
 - **[Your Name]** - Full Stack AI Developer
